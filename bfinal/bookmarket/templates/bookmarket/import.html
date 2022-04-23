@@ -1,0 +1,74 @@
+{% extends "bookmarket/base.html" %}
+{% if user.is_authenticated %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-sm-1">ID</th>
+                    <th class="col-sm-2">Date</th>
+                    <th class="col-sm-3">Book</th>
+                    <th class="col-sm-1">Price</th>
+                    <th class="col-sm-1">Amount</th>
+                    <th class="col-sm-2">Status</th>
+                    <th class="col-sm-2">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for import in imports %}
+                <tr>
+                    <td scope="row">{{ import.iid }}</td>
+                    <td>{{ import.date }}</td>
+                    <td>{{ import.book.name }}</td>
+                    <td>{{ import.price }}</td>
+                    <td>{{ import.amount }}</td>
+                    {% if import.status == 0 %}
+                    <td style="color: tomato;">Not Pay</td>
+                    {% elif import.status == 1 %}
+                    <td style="color: blue;">Importing</td>
+                    {% elif import.status == 2 %}
+                    <td style="color: aquamarine;">Stored</td>
+                    {% elif import.status == 3 %}
+                    <td style="color: burlywood">Refounded</td>
+                    {% else %}
+                    <td style="color: blueviolet;">Error Code!</td>
+                    {% endif %}
+                    <td>
+                        <form action="/import/" method="POST">
+                            {% csrf_token %}
+                            <input type="hidden" name="iid" value="{{ import.iid }}">
+                            <select name="status" id="import_{{ import.iid }}">
+                                {% if import.status == 0 %}
+                                <option disabled>Can't Edit</option>
+                                <option value="1">Pay</option>
+                                <option value="3">Refound</option>
+                                {% elif import.status == 1 %}
+                                <option disabled>Can't Edit</option>
+                                <option value="2">Stored</option>
+                                {% else %}
+                                <option disabled>Can't Edit</option>
+                                {% endif %}
+                            </select>
+                                <button class="ml-3" name="submit" value="edit">Edit</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+{% for import in imports %}
+<script>
+    $(document).ready(function(){
+        $("#import_{{ import.iid }}")
+    })
+</script>
+{% endfor %}
+{% endblock script %}
+
+{% endif %}

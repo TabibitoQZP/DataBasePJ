@@ -1,0 +1,11 @@
+{% extends "bookmarket/base.html" %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center my-5">
+        <h1>You Have Loged out!</h1>
+    </div>
+    <div class="row justify-content-center my-5">
+        <a href="{% url 'login' %}">Log in again</a>
+    </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,233 @@
+{% extends "bookmarket/base.html" %}
+{% if user.is_authenticated %}
+{% block content %}
+<div class="container">
+    <div class="row mt-5">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th class="col-sm-2">ISBN</th>
+                    <th class="col-sm-3">Name</th>
+                    <th class="col-sm-2">Public</th>
+                    <th class="col-sm-1">Author</th>
+                    <th class="col-sm-1">Price</th>
+                    <th class="col-sm-1">Amount</th>
+                    <th class="col-sm-2">Operation</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <form action="/book/" method="POST">
+                        {% csrf_token %}
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="isbn" class="form-control" required />
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="name" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="public" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="author" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="0.01" min="0" max="10000" name="price" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="1" min="0" max="100000" name="amount" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <button class="btn btn-primary" name="submit" value="bookadd">Add</button>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+                {% for book in books %}
+                <tr>
+                    <td scope="row">{{ book.ISBN }}</td>
+                    <td>{{ book.name }}</td>
+                    <td>{{ book.public }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.price }}</td>
+                    <td>{{ book.amount }}</td>
+                    <td>
+                        <select id="select_{{ book.ISBN }}">
+                            <option id="close_{{ book.ISBN }}">Close</option>
+                            <option id="expand_{{ book.ISBN }}">Expand</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr id="change_table_{{ book.ISBN }}" style="display: none;">
+                    <form action="/book/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="isbn" value="{{ book.ISBN }}">
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="ISBN" class="form-control" value="Can't Change" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="name" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="public" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="author" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="0.01" min="0" max="10000" name="price" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="1" min="0" max="100000" name="amount" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <button class="btn btn-danger" name="submit" value="bookchange">Change</button>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+                <tr id="import_table_{{ book.ISBN }}" style="display: none;">
+                    <form action="/book/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="isbn" value="{{ book.ISBN }}">
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="ISBN" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="name" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="public" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="author" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="0.01" min="0" max="10000" name="price" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="1" min="1" max="100000" name="amount" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <button class="btn btn-info" name="submit" value="bookimport">Import</button>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+                <tr id="sale_table_{{ book.ISBN }}" style="display: none;">
+                    <form action="/book/" method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="isbn" value="{{ book.ISBN }}">
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="ISBN" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="name" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="public" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="author" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="text" name="price" class="form-control" value="Can't Edit" disabled>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <input type="number" step="1" min="1" max="100000" name="amount" class="form-control">
+                            </div>
+                        </td>
+                        <td>
+                            <div class="form-group">
+                                <button class="btn btn-secondary" name="submit" value="booksale">Sale</button>
+                            </div>
+                        </td>
+                    </form>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock content %}
+
+{% block script %}
+{% for book in books %}
+<!-- initialize the button -->
+<script>
+    $(document).ready(function () {
+        $("#change_table_{{ book.ISBN }}").hide();
+        $("#sale_table_{{ book.ISBN }}").hide();
+        $("#import_table_{{ book.ISBN }}").hide();
+    });
+</script>
+<script>
+    $(document).ready(function () {
+        $("#select_{{ book.ISBN }}").change(function () {
+            var slct = $("#select_{{ book.ISBN }}").val();
+            // alert(slct);
+            if (slct == "Expand") {
+                $("#change_table_{{ book.ISBN }}").show();
+                $("#sale_table_{{ book.ISBN }}").show();
+                $("#import_table_{{ book.ISBN }}").show();
+            } else {
+                $("#change_table_{{ book.ISBN }}").hide();
+                $("#sale_table_{{ book.ISBN }}").hide();
+                $("#import_table_{{ book.ISBN }}").hide();
+            }
+        })
+    });
+</script>
+{% endfor %}
+{% endblock script %}
+{% endif %}

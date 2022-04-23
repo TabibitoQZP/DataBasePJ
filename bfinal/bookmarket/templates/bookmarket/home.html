@@ -1,0 +1,103 @@
+{% extends "bookmarket/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+<!-- this form is for submitting the change information -->
+{% load static %}
+<div class="container">
+    <div class="row mt-5">
+        <div class="col-sm-5"></div>
+        <div class="col-sm-2">
+            <img id="showimg" src="{% static 'bookmarket/97657145_p0.png' %}" class="img-fluid img-thumbnail full-width">
+        </div>
+    </div>
+</div>
+<form action="{% url 'home' %}" method="POST">
+    {% csrf_token %}
+    <div class="container">
+        <div class="row mt-5">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th class="col-sm-4">Information</th>
+                        <th class="col-sm-4">Value</th>
+                        <th class="col-sm-4">Edit</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <!-- wid -->
+                        <td scope="row">Work ID</td>
+                        <td>{{ profile.wid }}</td>
+                        <td>
+                            <input type="text" value="You cannot edit here." disabled>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- name -->
+                        <td scope="row">Name</td>
+                        <td>{{ profile.realname }}</td>
+                        <td>
+                            <input type="text" name="realname">
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- gender -->
+                        <td scope="row">Gender</td>
+                        {% if profile.man %}
+                        <td>Male</td>
+                        {% elif not profile.man %}
+                        <td>Female</td>
+                        {% else %}
+                        <td>Unknown</td>
+                        {% endif %}
+                        <td>
+                            <select name="man">
+                                <option value="null">--</option>
+                                <option value="1">Male</option>
+                                <option value="0">Female</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <!-- birth -->
+                        <td scope="row">Birth</td>
+                        <td>{{ profile.birth }}</td>
+                        <td>
+                            <input type="date" name="birth">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="row">
+            <div class="col-sm-8"></div>
+            <div class="col-sm-2">
+                <!-- change information -->
+                <button type="submit" class="btn btn-danger" name="submit" value="change">Change</button>
+            </div>
+        </div>
+    </div>
+</form>
+{% endif %}
+{% endblock content %}
+
+{% block script %}
+<script>
+    $(document).ready(function () {
+        var round_image_width = $("#showimg").width();
+        var round_image_height = $("#showimg").height();
+
+        if (round_image_height > round_image_width) {
+            $("#showimg").css('height', round_image_width);
+            $("#showimg").css('width', round_image_width);
+            $("#showimg").css('object-fit', 'cover');
+            // right top is the (0,0)
+            $("#showimg").css('object-position', '0 0');
+        } else {
+            $("#showimg").css('width', round_image_height);
+            $("#showimg").css('height', round_image_height);
+            $("#showimg").css('object-fit', 'cover');
+        }
+    });
+</script>
+{% endblock script %}

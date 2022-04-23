@@ -1,0 +1,16 @@
+{% extends "bookmarket/base.html" %}
+{% block content %}
+<div class="container">
+    <form method="POST">
+        {% csrf_token %}
+        <div class="row mt-5 justify-content-center"><h1>Log In</h1></div>
+        <div class="row mt-5 justify-content-center">
+                {{ form.as_p }}
+        </div>
+        <div class="row mt-2 justify-content-center">
+            <button type="submit" class="btn btn-primary">Sign Up</button>
+        </div>
+    </form>
+</div>
+
+{% endblock content %}
